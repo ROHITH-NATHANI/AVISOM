@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mailbox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            background: url('https://img.freepik.com/free-vector/background-gradient-with-bokeh-effect_23-2148382073.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #mailbox-container {
+            width: 95%; /* Adjust the width as needed */
+            max-width: 1200px; /* Maximum width for larger screens */
+            height: 90vh; /* Adjust the height as needed */
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #header {
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #header img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        #header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-family: 'Trebuchet MS', sans-serif;
+        }
+
+        #header marquee {
+            font-size: 12px;
+            color: #e9ecef;
+            margin-top: 10px;
+        }
+
+        #content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #sidebar {
+            width: 200px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #sidebar ul li {
+            padding: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #sidebar ul li:hover {
+            background-color: #e9ecef;
+        }
+
+        #message-list {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        #message-list .message {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #message-list .message:hover {
+            background-color: #f1f1f1;
+        }
+
+        #message-content {
+            flex: 2;
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #ddd;
+        }
+
+        .email {
+            margin-bottom: 20px;
+        }
+
+        .email .sender,
+        .email .subject,
+        .email .timestamp {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .email .body {
+            white-space: pre-wrap;
+        }
+
+        #compose {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #compose input,
+        #compose textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #compose button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #compose button:hover {
+            background-color: #0056b3;
+        }
+
+        #compose .actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mark-as-spam-btn {
+            background-color: #ff6347; /* Red color for spam button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px; /* Added margin for spacing */
+        }
+
+        .delete-btn {
+            background-color: #ccc; /* Color for delete button */
+            color: #333; /* Text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #999; /* Hover color */
+            color: white; /* Hover text color */
+        }
+    </style>
+</head>
+<body>
+    <div id="mailbox-container">
+        <div id="header">
+            <img src="C:\Users\ROHIT\Desktop\AVISOM\mail.png" alt="Mail Logo">
+            <h1>Mailbox</h1>
+            <marquee>Welcome to your mailbox. Check your messages and stay updated!</marquee>
+        </div>
+        <div id="content">
+            <div id="sidebar">
+                <ul>
+                    <li onclick="showInbox()">Inbox 📩</li>
+                    <li onclick="showSent()">Sent 📤</li>
+                    <li onclick="showDrafts()">Drafts ✉️</li>
+                    <li onclick="showSpam()">Spam ♨️</li>
+                    <li onclick="showTrash()">Trash 🚮</li>
+                    <li onclick="showCompose()">Compose 📝</li>
+                </ul>
+            </div>
+            <div id="message-list">
+                <!-- Messages will be dynamically loaded here -->
+            </div>
+            <div id="message-content">
+                <p>Select a message to view its content</p>
+            </div>
+            <div id="compose">
+                <input type="text" id="compose-to" placeholder="To">
+                <input type="text" id="compose-subject" placeholder="Subject">
+                <textarea id="compose-body" rows="10" placeholder="Compose your email..."></textarea>
+                <div class="actions">
+                    <button onclick="sendEmail()">Send</button>
+                    <button onclick="saveDraft()">Save Draft</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const messages = {
+                inbox: [
+                    {
+                        sender: 'Alice',
+                        subject: 'Meeting Reminder',
+                        timestamp: '10:30 AM',
+                        body: 'Don\'t forget about our meeting at 3 PM today.'
+                    },
+                    {
+                        sender: 'Bob',
+                        subject: 'Project Update',
+                        timestamp: '09:15 AM',
+                        body: 'Here is the latest update on the project...'
+                    }
+                ],
+                sent: [
+                    {
+                        sender: 'You',
+                        subject: 'Lunch Invitation',
+                        timestamp: '11:00 AM',
+                        body: 'Would you like to join us for lunch at 12:30 PM?'
+                    }
+                ],
+                drafts: [],
+                spam: [],
+                trash: []
+            };
+
+            const messageListContainer = document.getElementById('message-list');
+            const messageContentContainer = document.getElementById('message-content');
+            const composeContainer = document.getElementById('compose');
+
+            function loadMessages(folder) {
+                messageListContainer.innerHTML = '';
+                messages[folder].forEach((message, index) => {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message');
+                    messageElement.innerHTML = `
+                        <div>
+                            <div class="sender">${message.sender}</div>
+                            <div class="subject">${message.subject}</div>
+                            <div class="timestamp">${message.timestamp}</div>
+                        </div>
+                        <button class="mark-as-spam-btn" onclick="markAsSpam('${folder}', ${index})">Spam</button>
+                        <button class="delete-btn" onclick="deleteMessage('${folder}', ${index})">Delete</button>
+                    `;
+                    messageElement.addEventListener('click', () => showMessage(folder, index));
+                    messageListContainer.appendChild(messageElement);
+                });
+            }
+
+            function showMessage(folder, index) {
+                const message = messages[folder][index];
+                messageContentContainer.innerHTML = `
+                    <div class="email">
+                        <div class="sender"><strong>From:</strong> ${message.sender}</div>
+                        <div class="subject"><strong>Subject:</strong> ${message.subject}</div>
+                        <div class="timestamp"><strong>Time:</strong> ${message.timestamp}</div>
+                        <div class="body">${message.body}</div>
+                    </div>
+                `;
+            }
+
+            function markAsSpam(folder, index) {
+                const message = messages[folder].splice(index, 1)[0];
+                messages.spam.push(message);
+                loadMessages(folder);
+                alert('Message marked as spam');
+            }
+
+            function deleteMessage(folder, index) {
+                const message = messages[folder].splice(index, 1)[0];
+                messages.trash.push(message);
+                loadMessages(folder);
+                alert('Message deleted');
+            }
+
+            function showInbox() {
+                hideAllSections();
+                loadMessages('inbox');
+            }
+
+            function showSent() {
+                hideAllSections();
+                loadMessages('sent');
+            }
+
+            function showDrafts() {
+                hideAllSections();
+                loadMessages('drafts');
+            }
+
+            function showSpam() {
+                hideAllSections();
+                loadMessages('spam');
+            }
+
+            function showTrash() {
+                hideAllSections();
+                loadMessages('trash');
+            }
+
+            function showCompose() {
+                hideAllSections();
+                composeContainer.style.display = 'flex';
+            }
+
+            function hideAllSections() {
+                messageListContainer.innerHTML = '';
+                messageContentContainer.innerHTML = '<p>Select a message to view its content</p>';
+                composeContainer.style.display = 'none';
+            }
+
+            window.showInbox = showInbox;
+            window.showSent = showSent;
+            window.showDrafts = showDrafts;
+            window.showSpam = showSpam;
+            window.showTrash = showTrash;
+            window.showCompose = showCompose;
+            window.markAsSpam = markAsSpam;
+            window.deleteMessage = deleteMessage;
+
+            window.sendEmail = () => {
+                const to = document.getElementById('compose-to').value;
+                const subject = document.getElementById('compose-subject').value;
+                const body = document.getElementById('compose-body').value;
+
+                if (to && subject && body) {
+                    messages.sent.push({
+                        sender: 'You',
+                        subject: subject,
+                        timestamp: new Date().toLocaleTimeString(),
+                        body: body
+                    });
+
+                    alert('Email sent!');
+                    showSent();
+                } else {
+                    alert('Please fill out all fields.');
+                }
+            };
+
+            window.saveDraft = () => {
+                const to = document.getElementById('compose-to').value;
+                const subject = document.getElementById('compose-subject').value;
+                const body = document.getElementById('compose-body').value;
+
+                if (subject && body) {
+                    messages.drafts.push({
+                        sender: to || 'Draft',
+                        subject: subject,
+                        timestamp: new Date().toLocaleTimeString(),
+                        body: body
+                    });
+
+                    alert('Draft saved!');
+                    showDrafts();
+                } else {
+                    alert('Please fill out the subject and body.');
+                }
+            };
+
+            // Load inbox by default
+            showInbox();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

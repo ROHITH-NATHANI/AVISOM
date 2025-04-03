@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Online Meeting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            background-image: url('https://img.freepik.com/free-vector/background-gradient-with-bokeh-effect_23-2148382073.jpg');             
+            background-size: cover; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column; /* Allow stacking of alert and main content */
+        }
+
+        #alertMessage {
+            background-color: rgba(0, 128, 0, 0.6);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            width: 80%;
+            text-align: center;
+            display: none;
+        }
+
+        .premium-box {
+            background: linear-gradient(135deg, #6e45e2, #88d3ce);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transition: all 0.3s ease; /* Added transition */
+        }
+
+        .premium-box h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .premium-box p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .cost {
+            font-size: 1.8em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            margin-right: 20px;
+        }
+
+        .payment-method img {
+            width: 50px;
+            margin-bottom: 10px;
+        }
+
+        .payment-method p {
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .btn {
+            background-color: #fff;
+            border: none;
+            border-radius: 25px;
+            color: #6e45e2;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 15px 30px;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #6e45e2;
+            color: #fff;
+        }
+
+        .currency-selector {
+            margin: 20px 0;
+        }
+
+        .currency-selector select {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1em;
+        }
+
+        .payment-details {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .payment-details label {
+            font-weight: bold;
+        }
+
+        .payment-details input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="alertMessage">Payment successfully completed!</div>
+    <div class="premium-box">
+        <h1>Premium Online Meeting</h1>
+        <p>Experience seamless, high-quality video meetings with our premium service. Enjoy exclusive features, priority support, and much more.</p>
+        <p class="cost" id="cost">$5/month</p>
+        <div class="currency-selector">
+            <label for="currency">Choose your currency:</label>
+            <select id="currency" onchange="updateCost()">
+                <option value="usd">$5/month (USD)</option>
+                <option value="eur">€4.31/month (EUR)</option>
+                <option value="gbp">£3.67/month (GBP)</option>
+                <option value="inr">₹349/month (INR)</option>
+                <option value="jpy">¥508/month (JPY)</option>
+                <!-- Add more currencies as needed -->
+            </select>
+        </div><br><br>
+        <div class="payment-methods">
+            <div class="payment-method">
+                <a href="#" onclick="showUPIDetails(); return false;">
+                    <img src="https://cdn.zeebiz.com/sites/default/files/2024/01/03/274966-upigpay.jpg" alt="UPI Logo">
+                    <p>UPI</p>
+                </a>
+            </div>
+            <div class="payment-method">
+                <a href="#" onclick="showCardDetails(); return false;">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_2iF2L8M3dzZRasnnHectjG45P4FzTB2i2w&s" alt="Card Logo">
+                    <p>Credit/Debit Card</p>
+                </a>
+            </div>
+        </div><br><br>
+
+        <div id="upiDetails" class="payment-details">
+            <h3>UPI Payment</h3>
+            <label for="upi-id">UPI ID:</label>
+            <input type="text" id="upi-id" placeholder="Enter your UPI ID">
+        </div>
+
+        <div id="cardDetails" class="payment-details">
+            <h3>Credit/Debit Card Payment</h3>
+            <label for="card-number">Card Number:</label>
+            <input type="text" id="card-number" placeholder="Enter your card number">
+            <label for="expiry-date">Expiry Date:</label>
+            <input type="text" id="expiry-date" placeholder="MM/YY">
+            <label for="cvv">CVV:</label>
+            <input type="text" id="cvv" placeholder="Enter CVV">
+        </div>
+
+        <button class="btn" onclick="paymentSuccess()">Subscribe Now</button>
+    </div>
+
+    <script>
+        function updateCost() {
+            var currency = document.getElementById('currency').value;
+            var costElement = document.getElementById('cost');
+            var costs = {
+                usd: '$5/month',
+                eur: '€4.31/month',
+                gbp: '£3.67/month',
+                inr: '₹349/month',
+                jpy: '¥508/month'
+            };
+            costElement.innerText = costs[currency];
+        }
+
+        function showUPIDetails() {
+            document.getElementById('upiDetails').style.display = 'block';
+            document.getElementById('cardDetails').style.display = 'none';
+        }
+
+        function showCardDetails() {
+            document.getElementById('cardDetails').style.display = 'block';
+            document.getElementById('upiDetails').style.display = 'none';
+        }
+
+        function paymentSuccess() {
+            // Display alert message
+            var alertMessage = document.getElementById('alertMessage');
+            alertMessage.style.display = 'block';
+
+            // Hide the alert after some time
+            setTimeout(function() {
+                alertMessage.style.display = 'none';
+            }, 3000); // Hide after 3 seconds (3000 milliseconds)
+        }
+    </script>
+</body>
+</html>
+
+
